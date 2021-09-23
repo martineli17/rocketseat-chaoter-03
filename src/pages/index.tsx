@@ -32,6 +32,8 @@ interface HomeProps {
 export default function Home({ postsPagination }: HomeProps) {
   const [posts, setPosts] = useState(postsPagination.results);
   const [nextPage, setNextPage] = useState(postsPagination.next_page ? 2 : 0);
+  const router = useRouter();
+  const { loading } = useLoadingRouter(router);
 
   function handleNextPage(queryString: string) {
     const page = queryString ? nextPage + 1 : 0;
@@ -47,33 +49,39 @@ export default function Home({ postsPagination }: HomeProps) {
 
   return (
     <>
-      <div className={commonStyles.content}>
-        <Header />
-        <div className={styles.posts}>
-          {posts.map(post => (
-            <Link href={`post/${post.uid}`}>
-              <div className={styles.post} key={post.uid}>
-                <h1>{post.data.title}</h1>
-                <h2>{post.data.subtitle}</h2>
-                <div>
-                  <AiOutlineCalendar className={styles.icon} />
-                  <time>{FormatDatePT_BR(new Date(post.first_publication_date))}</time>
-                  <AiOutlineUser className={styles.icon} />
-                  <span>{post.data.author}</span>
+      {
+        loading && <Loading />
+      }
+      {
+        !loading &&
+        <div className={commonStyles.content}>
+          <Header />
+          <div className={styles.posts}>
+            {posts.map(post => (
+              <Link href={`post/${post.uid}`}>
+                <div className={styles.post} key={post.uid}>
+                  <h1>{post.data.title}</h1>
+                  <h2>{post.data.subtitle}</h2>
+                  <div>
+                    <AiOutlineCalendar className={styles.icon} />
+                    <time>{FormatDatePT_BR(new Date(post.first_publication_date))}</time>
+                    <AiOutlineUser className={styles.icon} />
+                    <span>{post.data.author}</span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
+          {
+            nextPage !== 0 && (
+              <button className={styles.nextPage}
+                onClick={() => handleLoadPosts()}>
+                Carregar mais posts
+              </button>
+            )
+          }
         </div>
-        {
-          nextPage !== 0 && (
-            <button className={styles.nextPage}
-              onClick={() => handleLoadPosts()}>
-              Carregar mais posts
-            </button>
-          )
-        }
-      </div>
+      }
     </>
   )
 }

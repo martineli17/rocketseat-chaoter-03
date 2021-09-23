@@ -3,18 +3,7 @@ import { GetPrismicPost } from "../services/prismicPosts";
 
 export const getStaticPathsPost: GetStaticPaths = async () => {
     return {
-        paths: [
-            {
-              params: {
-                slug: 'como-utilizar-hooks',
-              },
-            },
-            {
-              params: {
-                slug: 'criando-um-app-cra-do-zero',
-              },
-            },
-          ],
+        paths: [],
         fallback: "blocking",
     }
 }

@@ -5,6 +5,9 @@ import { FormatDatePT_BR } from '../../utils/dataUtils';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useLoadingRouter } from '../../hooks/useLoadingRouter';
+import { Loading } from '../../components/Loading';
 interface Post {
   first_publication_date: string | null;
   data: {
@@ -28,6 +31,8 @@ interface PostProps {
 
 export default function Post({ post }: PostProps) {
   const [totalTimeReading, setTotalTimeReading] = useState(0);
+  const router = useRouter();
+  const { loading } = useLoadingRouter(router);
 
   useEffect(() => {
     let totalLetters = 0;
@@ -41,38 +46,44 @@ export default function Post({ post }: PostProps) {
   }, [post]);
 
   return (
-    <> 
-      <div className={commonStyles.content}>
-        <Header />
-        <div className={styles.data}>
-          <img
-            alt={`Banner do post ${post.data.title}`}
-            src={post.data.banner.url}
-            width="400"
-            height="250" />
-          <h1>{post.data.title}</h1>
-          <div className={styles.infos}>
-            <AiOutlineCalendar className={styles.icon} />
-            <time>{FormatDatePT_BR(new Date(post.first_publication_date))}</time>
-            <AiOutlineUser className={styles.icon} />
-            <span>{post.data.author}</span>
-            <AiOutlineClockCircle className={styles.icon} />
-            <span>{4} min</span>
-          </div>
-          <div className={styles.body}>
-            {
-              post.data.content.map((content, index) => (
-                <div>
-                  <h2>{content.heading}</h2>
-                  {
-                    content.body.map(body => <p>{body.text}</p>)
-                  }
-                </div>
-              ))
-            }
+    <>
+      {
+        loading && <Loading />
+      }
+      {
+        !loading &&
+        <div className={commonStyles.content}>
+          <Header />
+          <div className={styles.data}>
+            <img
+              alt={`Banner do post ${post.data.title}`}
+              src={post.data.banner.url}
+              width="400"
+              height="250" />
+            <h1>{post.data.title}</h1>
+            <div className={styles.infos}>
+              <AiOutlineCalendar className={styles.icon} />
+              <time>{FormatDatePT_BR(new Date(post.first_publication_date))}</time>
+              <AiOutlineUser className={styles.icon} />
+              <span>{post.data.author}</span>
+              <AiOutlineClockCircle className={styles.icon} />
+              <span>{totalTimeReading} min</span>
+            </div>
+            <div className={styles.body}>
+              {
+                post.data.content.map((content, index) => (
+                  <div>
+                    <h2>{content.heading}</h2>
+                    {
+                      content.body.map(body => <p>{body.text}</p>)
+                    }
+                  </div>
+                ))
+              }
+            </div>
           </div>
         </div>
-      </div>
+      }
     </>
   )
 }
