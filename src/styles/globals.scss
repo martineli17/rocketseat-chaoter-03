@@ -1,7 +1,45 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root {
+  --white: #F8F8F8;
+  --gray-100: #D7D7D7;
+  --gray-300: #BBBBBB;
+  --gray-800: #282C34;
+  --pink: #FF57B2;
 }
 
-// TODO
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  @media (max-width: 1080px) {
+      font-size: 93.75%;
+  }
+  @media (max-width: 720px) {
+      font-size: 87.5%;
+  }
+}
+
+body {
+  background: var(--gray-800);
+  color: var(--white);
+  -webkit-font-smoothing: antialiased;
+}
+
+body,
+input,
+textarea,
+button {
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+}
+
+button {
+  cursor: pointer;
+}
+
+[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

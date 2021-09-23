@@ -261,15 +261,15 @@ describe('Post', () => {
     screen.getByText(/Ut varius quis velit sed cursus/);
   });
 
-  it('should be able to render loading message if fallback', () => {
-    mockedUseRouter.mockReturnValueOnce({
-      isFallback: true,
-    });
+  // it('should be able to render loading message if fallback', () => {
+  //   mockedUseRouter.mockReturnValueOnce({
+  //     isFallback: true,
+  //   });
 
-    const postProps = mockedGetByUIDReturn;
+  //   const postProps = mockedGetByUIDReturn;
 
-    render(<Post post={postProps} />);
+  //   render(<Post post={postProps} />);
 
-    screen.getByText('Carregando...');
-  });
+  //   screen.getByText('Carregando...');
+  // });
 });

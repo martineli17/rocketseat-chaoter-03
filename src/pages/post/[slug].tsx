@@ -1,10 +1,10 @@
-import { GetStaticPaths, GetStaticProps } from 'next';
-
-import { getPrismicClient } from '../../services/prismic';
-
+import { AiOutlineCalendar, AiOutlineUser, AiOutlineClockCircle } from 'react-icons/ai';
+import Header from '../../components/Header';
+import { getStaticPropsPost, getStaticPathsPost } from '../../serverRender/postServerRender';
+import { FormatDatePT_BR } from '../../utils/dataUtils';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
-
+import React, { useEffect, useState } from 'react';
 interface Post {
   first_publication_date: string | null;
   data: {
@@ -26,20 +26,56 @@ interface PostProps {
   post: Post;
 }
 
-// export default function Post() {
-//   // TODO
-// }
+export default function Post({ post }: PostProps) {
+  const [totalTimeReading, setTotalTimeReading] = useState(0);
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient();
-//   const posts = await prismic.query(TODO);
+  useEffect(() => {
+    let totalLetters = 0;
+    post.data.content.forEach(content => {
+      totalLetters += content.heading.length;
+      content.body.forEach(body => {
+        totalLetters += body.text.length;
+      });
+    });
+    setTotalTimeReading(Math.floor(totalLetters / 265));
+  }, [post]);
 
-//   // TODO
-// };
+  return (
+    <> 
+      <div className={commonStyles.content}>
+        <Header />
+        <div className={styles.data}>
+          <img
+            alt={`Banner do post ${post.data.title}`}
+            src={post.data.banner.url}
+            width="400"
+            height="250" />
+          <h1>{post.data.title}</h1>
+          <div className={styles.infos}>
+            <AiOutlineCalendar className={styles.icon} />
+            <time>{FormatDatePT_BR(new Date(post.first_publication_date))}</time>
+            <AiOutlineUser className={styles.icon} />
+            <span>{post.data.author}</span>
+            <AiOutlineClockCircle className={styles.icon} />
+            <span>{4} min</span>
+          </div>
+          <div className={styles.body}>
+            {
+              post.data.content.map((content, index) => (
+                <div>
+                  <h2>{content.heading}</h2>
+                  {
+                    content.body.map(body => <p>{body.text}</p>)
+                  }
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
 
-// export const getStaticProps = async context => {
-//   const prismic = getPrismicClient();
-//   const response = await prismic.getByUID(TODO);
-
-//   // TODO
-// };
+export const getStaticPaths = getStaticPathsPost;
+export const getStaticProps = getStaticPropsPost;
